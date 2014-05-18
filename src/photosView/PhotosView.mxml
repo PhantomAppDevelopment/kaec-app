@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="KAEC Photos" viewActivate="init(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.ViewNavigatorEvent;
+			
+			private static const flickrapikey:String = "";
+			
+			protected function init(event:ViewNavigatorEvent):void
+			{
+				photoService.url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key="+flickrapikey+"&text=King%20Abdullah%20Economic%20City&sort=relevance&format=rest";
+				photoService.send();
+			}
+			
+			protected function photoService_resultHandler(event:ResultEvent):void
+			{
+				myBusy.visible = false;
+			}
+			
+			protected function showLargeImage(event:IndexChangeEvent):void
+			{
+				bigPhotoGroup.visible = true;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:HTTPService id="photoService" result="photoService_resultHandler(event)" />
+	</fx:Declarations>
+	
+	<s:navigationContent>
+		<s:Button click="navigator.popView()">
+			<s:icon>
+				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/icons/160/1_navigation_previous_item.png')"
+										source240dpi="@Embed('assets/icons/240/1_navigation_previous_item.png')"
+										source320dpi="@Embed('assets/icons/320/1_navigation_previous_item.png')"/>
+			</s:icon>
+		</s:Button>
+	</s:navigationContent>
+		
+	<s:List id="photoList" change="showLargeImage(event)" itemRenderer="PhotoRenderer" dataProvider="{photoService.lastResult.rsp.photos.photo}" styleName="myListStyle" width="100%" height="100%">
+		<s:layout>
+			<s:TileLayout columnAlign="justifyUsingGap" useVirtualLayout="true" />
+		</s:layout>
+	</s:List>
+	
+	<s:Group id="bigPhotoGroup" click="{bigPhotoGroup.visible = false}" visible="false" width="100%" height="100%">
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="#000000" alpha=".7"/>
+			</s:fill>
+		</s:Rect>
+		<s:BitmapImage width="100%" height="100%" scaleMode="letterbox" source="{'http://farm'+photoList.selectedItem.farm+'.staticflickr.com/'+photoList.selectedItem.server+'/'+photoList.selectedItem.id+'_'+photoList.selectedItem.secret+'_z.jpg'}"/>
+	</s:Group>
+	
+	<s:BusyIndicator id="myBusy" verticalCenter="0" horizontalCenter="0" visible="false"/>
+</s:View>

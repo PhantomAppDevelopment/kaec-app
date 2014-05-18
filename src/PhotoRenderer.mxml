@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" width="75" height="75" autoDrawBackground="false" opaqueBackground="#000000" initialize="itemrenderer1_initializeHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.core.ContentCache;
+			
+			static private const iconCache:ContentCache = new ContentCache();
+			
+			override public function set data(value:Object):void{
+				super.data = value;
+				
+				if(data){
+					photo.source = 'http://farm'+data.farm+'.staticflickr.com/'+data.server+'/'+data.id+'_'+data.secret+'_s.jpg'
+				}
+			}
+			
+			protected function itemrenderer1_initializeHandler(event:FlexEvent):void
+			{
+				photo.contentLoader = iconCache;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:BitmapImage id="photo" width="75" height="75" scaleMode="letterbox"/>
+</s:ItemRenderer>

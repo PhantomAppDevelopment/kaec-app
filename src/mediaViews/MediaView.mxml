@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="KAEC Videos" viewActivate="init(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.PropertyChangeEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.ViewNavigatorEvent;
+			
+			public var startIndex:int;
+			public var recent:Boolean;
+			public var loading:Boolean;
+			public var months:Object = new Object();
+			
+			protected function init(event:ViewNavigatorEvent):void
+			{
+				months["01"] = "January";
+				months["02"] = "February";
+				months["03"] = "March";
+				months["04"] = "April";
+				months["05"] = "May";
+				months["06"] = "June";
+				months["07"] = "July";
+				months["08"] = "August";
+				months["09"] = "September";
+				months["10"] = "October";
+				months["11"] = "November";
+				months["12"] = "December";
+				
+				myBusy.visible = true;
+				startIndex = 1;
+				recent = true;
+				recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&max-results=20&v=2&start-index="+startIndex;
+				recentVideos.send();
+			}
+			
+			protected function changeState(state:String):void
+			{
+				currentState = state;
+				
+				if(state == "PopularState"){
+					recent = false;
+				} else {
+					recent = true;
+				}
+				
+				startIndex = 1;
+				myBusy.visible = true;
+				
+				if(recent == false){
+					recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&max-results=20&v=2&start-index="+startIndex;
+				} else {
+					recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&orderby=published&max-results=20&v=2&start-index="+startIndex;
+				}
+				
+				videosList.dataProvider = null;
+				recentVideos.send();
+			}
+			
+			protected function recentVideos_resultHandler(event:ResultEvent):void
+			{
+				if(videosList.dataProvider == null){
+					videosList.dataProvider = event.result.feed.entry;
+				} else {
+					for each ( var item : * in event.result.feed.entry){
+						videosList.dataProvider.addItem(item);
+					}
+				}
+				
+				loading = false;
+				myBusy.visible = false;
+			}
+			
+			protected function playVideo(event:IndexChangeEvent):void
+			{
+				var myObject:Object = new Object();
+				myObject.title = videosList.selectedItem.title;
+				myObject.url = videosList.selectedItem.group.videoid;
+				navigator.pushView(VideoDetails, myObject);
+			}
+						
+			protected function videosList_creationCompleteHandler(event:FlexEvent):void
+			{
+				videosList.scroller.viewport.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, propertyChangeHandler);
+			}
+			
+			protected function propertyChangeHandler( event : PropertyChangeEvent):void {
+				if(event.property == "verticalScrollPosition"){
+					if(event.newValue == ( event.currentTarget.measuredHeight - event.currentTarget.height)){
+						loadMore();
+					}
+				}
+			}
+			
+			public function loadMore():void{
+				if(!loading){
+					myBusy.visible = true;
+					loading = true;
+					startIndex+=20;
+					if(recent == false){
+						recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&max-results=20&v=2&start-index="+startIndex;
+					} else {
+						recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&orderby=published&max-results=20&v=2&start-index="+startIndex;
+					}
+					recentVideos.send();
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:HTTPService id="recentVideos" result="recentVideos_resultHandler(event)"/>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="PopularState"/>
+		<s:State name="RecentState"/>
+	</s:states>
+	
+	<s:navigationContent>
+		<s:Button click="navigator.popView()">
+			<s:icon>
+				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/icons/160/1_navigation_previous_item.png')"
+										source240dpi="@Embed('assets/icons/240/1_navigation_previous_item.png')"
+										source320dpi="@Embed('assets/icons/320/1_navigation_previous_item.png')"/>
+			</s:icon>
+		</s:Button>
+	</s:navigationContent>
+	
+	<s:HGroup id="menuGroup" height="50" top="0" width="100%">
+		<s:Group click="changeState('PopularState')" width="50%" height="100%">
+			<s:Label text="Popular" fontSize="16" styleName="myLabel" verticalCenter="0" horizontalCenter="0"/>
+		</s:Group>
+		<s:Group click="changeState('RecentState')" width="50%" height="100%">
+			<s:Label text="Recent" fontSize="16" styleName="myLabel" verticalCenter="0" horizontalCenter="0"/>
+		</s:Group>
+	</s:HGroup>
+	
+	<s:Line left.PopularState="0" right.RecentState="0" y="50" width="50%">
+		<s:stroke>
+			<s:SolidColorStroke color="#FFFFFF" weight="3"/>
+		</s:stroke>
+	</s:Line>
+	
+	<s:List styleName="myListStyle" creationComplete="videosList_creationCompleteHandler(event)" id="videosList" change="playVideo(event)" width="100%" top="50" bottom="0">
+		<s:itemRenderer>
+			<fx:Component>
+				<s:IconItemRenderer messageStyleName="myMessageStyle2" iconWidth="67" iconHeight="50" iconFunction="myIconFunction" messageFunction="myMessageFunction" labelFunction="myLabelFunction">
+					<fx:Script>
+						<![CDATA[
+							
+							public function myIconFunction(item:Object):String{		
+								return "http://i1.ytimg.com/vi/"+data.group.videoid+"/default.jpg";								
+							}
+							
+							public function myLabelFunction(item:Object):String{								
+								return data.title;
+							}
+							
+							public function myMessageFunction(item:Object):String{								
+								return data.author.name+ "\n" + outerDocument.months[data.published.slice(5,7)]+" "+data.published.slice(8,10)+", "+data.published.slice(0,4);
+							}
+							
+						]]>
+					</fx:Script>
+				</s:IconItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
+	
+	<s:BusyIndicator id="myBusy" verticalCenter="0" horizontalCenter="0" visible="false"/>
+	
+</s:View>

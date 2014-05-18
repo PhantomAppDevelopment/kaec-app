@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="{data.label}" viewActivate="init(event)" xmlns:local="*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.ViewNavigatorEvent;
+			
+			//Copy your own client ID
+			private static const clientID:String = "";
+			
+			//Copy your own client secret
+			private static const clientSecret:String = "";
+			
+			
+			protected function init(event:ViewNavigatorEvent):void
+			{
+				myBusy.visible = true;
+				venueSearch.url = "https://api.foursquare.com/v2/venues/search?ll=22.24,39.05&categoryId="+data.category+"&limit=50"+
+					"&client_id="+clientID+"&client_secret="+clientSecret+"&v=20140101";
+				venueSearch.send();
+			}
+			
+			protected function vunueResult(event:ResultEvent):void
+			{
+				myBusy.visible = false;
+				
+				var rawData:Object = JSON.parse(String(event.result));
+				
+				trace(event.result);
+				
+				var myArray:ArrayList = new ArrayList(rawData.response.venues as Array);
+				myList.dataProvider = myArray;
+				
+			}
+			
+			protected function openDetailsPopUp(event:IndexChangeEvent):void
+			{
+				navigator.pushView(MapDetailsView, myList.selectedItem);
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:HTTPService id="venueSearch" result="vunueResult(event)" resultFormat="text"/>
+	</fx:Declarations>
+	
+	<s:navigationContent>
+		<s:Button click="navigator.popView()">
+			<s:icon>
+				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/icons/160/1_navigation_previous_item.png')"
+										source240dpi="@Embed('assets/icons/240/1_navigation_previous_item.png')"
+										source320dpi="@Embed('assets/icons/320/1_navigation_previous_item.png')"/>
+			</s:icon>
+		</s:Button>
+	</s:navigationContent>
+	
+	<s:List id="myList" change="openDetailsPopUp(event)" styleName="myListStyle" fontFamily="_sans" width="100%" height="100%">
+		<s:itemRenderer>
+			<fx:Component>
+				<s:IconItemRenderer labelFunction="myLabelFunction" messageStyleName="myMessageStyle" messageFunction="myMessageFunction">
+					<s:decorator>
+						<s:MultiDPIBitmapSource source160dpi="@Embed('assets/icons/160/6_social_send_now.png')"
+												source240dpi="@Embed('assets/icons/240/6_social_send_now.png')"
+												source320dpi="@Embed('assets/icons/320/6_social_send_now.png')"/>
+					</s:decorator>	
+					
+					<fx:Script>
+						<![CDATA[
+							
+							private function myLabelFunction(item:Object):String{
+								return data.name;
+							}
+							
+							private function myMessageFunction(item:Object):String{
+								if(data.location.address == undefined){
+									if(data.categories.length != 0){
+										return data.categories[0].name;
+									} else {
+										return "";
+									}
+								} else {
+									if(data.categories.length != 0){
+										return data.location.address + "\n" + data.categories[0].name;
+									} else {
+										return "";
+									}
+								}
+								
+								
+							}
+							
+						]]>
+					</fx:Script>
+				</s:IconItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
+	
+	<s:BusyIndicator id="myBusy" verticalCenter="0" horizontalCenter="0" visible="false"/>
+</s:View>

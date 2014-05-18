@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="KAEC News" viewActivate="init(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.XMLListCollection;
+			import mx.rpc.events.ResultEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.ViewNavigatorEvent;
+			
+			protected function init(event:ViewNavigatorEvent):void
+			{
+				myBusy.visible = true;
+				newsService.send();
+			}
+			
+			protected function changeState(state:String):void
+			{
+				currentState = state;
+				myBusy.visible = true;
+				newsService.send();
+			}
+			
+			protected function newsService_resultHandler(event:ResultEvent):void
+			{
+				myBusy.visible = false;
+			}
+			
+			protected function list1_changeHandler(event:IndexChangeEvent):void
+			{
+				navigator.pushView(NewsDetails, newsList.selectedItem);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:HTTPService id="newsService" url.OfficialState="http://www.kaec.net/feed/" url.SyndicatedState="https://news.google.com/news/feeds?q=KAEC&amp;output=rss" result="newsService_resultHandler(event)" resultFormat="e4x" />
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="OfficialState"/>
+		<s:State name="SyndicatedState"/>
+	</s:states>
+	
+	<s:navigationContent>
+		<s:Button click="navigator.popView()">
+			<s:icon>
+				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/icons/160/1_navigation_previous_item.png')"
+										source240dpi="@Embed('assets/icons/240/1_navigation_previous_item.png')"
+										source320dpi="@Embed('assets/icons/320/1_navigation_previous_item.png')"/>
+			</s:icon>
+		</s:Button>
+	</s:navigationContent>
+	
+	<s:HGroup id="menuGroup" height="50" top="0" width="100%">
+		<s:Group click="changeState('OfficialState')" width="50%" height="100%">
+			<s:Label text="Official News" fontSize="16" styleName="myLabel" verticalCenter="0" horizontalCenter="0"/>
+		</s:Group>
+		<s:Group click="changeState('SyndicatedState')" width="50%" height="100%">
+			<s:Label text="Syndicated News" fontSize="16" styleName="myLabel" verticalCenter="0" horizontalCenter="0"/>
+		</s:Group>
+	</s:HGroup>
+	
+	<s:Line left.OfficialState="0" right.SyndicatedState="0" y="50" width="50%">
+		<s:stroke>
+			<s:SolidColorStroke color="#FFFFFF" weight="3"/>
+		</s:stroke>
+	</s:Line>
+	
+	<s:List id="newsList" styleName="myListStyle" change="list1_changeHandler(event)" width="100%" top="50" bottom="0" dataProvider="{new XMLListCollection(new XMLList(newsService.lastResult.channel.item))}">
+		<s:itemRenderer>
+			<fx:Component>
+				<s:IconItemRenderer labelFunction="myLabelFunction" messageFunction="myMessageFunction" messageStyleName="myMessageStyle">
+					<s:decorator>
+						<s:MultiDPIBitmapSource source160dpi="@Embed('assets/icons/160/1_navigation_next_item.png')"
+												source240dpi="@Embed('assets/icons/240/1_navigation_next_item.png')"
+												source320dpi="@Embed('assets/icons/320/1_navigation_next_item.png')"/>
+					</s:decorator>
+					
+					<fx:Script>
+						<![CDATA[
+							
+							private function myLabelFunction(item:Object):String{
+								return "";
+							}
+							
+							private function myMessageFunction(item:Object):String{
+								return data.title;
+							}
+							
+						]]>
+					</fx:Script>
+				</s:IconItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
+	
+	<s:BusyIndicator id="myBusy" visible="false" horizontalCenter="0" verticalCenter="0"/>
+</s:View>

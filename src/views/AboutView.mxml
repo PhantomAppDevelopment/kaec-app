@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="About">
+	
+	<s:navigationContent>
+		<s:Button click="navigator.popView()">
+			<s:icon>
+				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/icons/160/1_navigation_previous_item.png')"
+										source240dpi="@Embed('assets/icons/240/1_navigation_previous_item.png')"
+										source320dpi="@Embed('assets/icons/320/1_navigation_previous_item.png')"/>
+			</s:icon>
+		</s:Button>
+	</s:navigationContent>
+	
+	<s:Rect left="5" right="5" top="5" bottom="5" radiusX="5" radiusY="5">
+		<s:fill>
+			<s:SolidColor color="#444444"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:VGroup left="10" right="10" top="10" bottom="10">
+		<s:Spacer height="10" width="10"/>
+		<s:Label text="Phantom App Development - 2014"/>
+		<s:Label text="http://phantom.im"/>
+		<s:Spacer height="10" width="10"/>
+		<s:Label text="This application uses the following APIs and Webservices:" width="100%"/>
+		<s:Spacer height="10" width="10"/>
+		<s:Label text="Youtube API"/>
+		<s:Label text="Google News RSS Feeds"/>
+		<s:Label text="Google Maps Embed API"/>
+		<s:Label text="Flickr API"/>
+		<s:Label text="Foursquare API"/>
+	</s:VGroup>
+</s:View>

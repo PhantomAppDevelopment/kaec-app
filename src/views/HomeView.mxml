@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="KAEC Companion" actionBarVisible="true">
+	<fx:Script>
+		<![CDATA[
+			import businessViews.DirectoryView;
+			
+			import mediaViews.MediaView;
+			
+			import newsViews.NewsView;
+			
+			import photosView.PhotosView;
+		]]>
+	</fx:Script>
+	
+	<s:actionContent>
+		<s:Button click="navigator.pushView(AboutView)">
+			<s:icon>
+				<s:MultiDPIBitmapSource source160dpi="@Embed('assets/icons/160/2_action_about.png')"
+										source240dpi="@Embed('assets/icons/240/2_action_about.png')"
+										source320dpi="@Embed('assets/icons/320/2_action_about.png')"/>
+			</s:icon>
+		</s:Button>
+	</s:actionContent>
+	
+	<s:VGroup id="mainGroup" width="100%" height="100%" gap="0" requestedMaxRowCount="4" rowHeight="{mainGroup.height/4}">
+		<s:Group width="100%" height="25%" click="navigator.pushView(NewsView)">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:entries>
+							<s:GradientEntry color="#FFAE18"/>
+							<s:GradientEntry color="#FF8A00"/>														
+						</s:entries>
+					</s:LinearGradient>	
+				</s:fill>
+			</s:Rect>
+			<s:BitmapImage source="@Embed('assets/rss.png')" left="20" verticalCenter="0" smooth="true" width="50" height="50"/>
+			<s:Label text="NEWS" styleName="myLabel" left="100" verticalCenter="0"/>
+			<s:BitmapImage source="@Embed('assets/rightarrow.png')" right="5" verticalCenter="0" smooth="true" width="40" height="40"/>
+		</s:Group>
+		<s:Group click="navigator.pushView(DirectoryView)" width="100%" height="25%">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:entries>
+							<s:GradientEntry color="#2CB1E1"/>
+							<s:GradientEntry color="#12A0CF"/>														
+						</s:entries>
+					</s:LinearGradient>	
+				</s:fill>
+			</s:Rect>
+			<s:BitmapImage source="@Embed('assets/sign.png')" left="20" verticalCenter="0" smooth="true" width="50" height="50"/>
+			<s:Label text="DIRECTORY" styleName="myLabel" left="100" verticalCenter="0"/>
+			<s:BitmapImage source="@Embed('assets/rightarrow.png')" right="5" verticalCenter="0" smooth="true" width="40" height="40"/>
+		</s:Group>
+		<s:Group width="100%" height="25%" click="navigator.pushView(PhotosView)">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:entries>
+							<s:GradientEntry color="#92C500"/>
+							<s:GradientEntry color="#669900"/>														
+						</s:entries>
+					</s:LinearGradient>	
+				</s:fill>
+			</s:Rect>
+			<s:BitmapImage source="@Embed('assets/photo.png')" left="20" verticalCenter="0" smooth="true" width="50" height="50"/>
+			<s:Label text="PHOTOS" styleName="myLabel" left="100" verticalCenter="0"/>
+			<s:BitmapImage source="@Embed('assets/rightarrow.png')" right="5" verticalCenter="0" smooth="true" width="40" height="40"/>
+		</s:Group>
+		<s:Group click="navigator.pushView(MediaView)" width="100%" height="25%">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:LinearGradient rotation="90">
+						<s:entries>
+							<s:GradientEntry color="#E92727"/>
+							<s:GradientEntry color="#CC0000"/>														
+						</s:entries>
+					</s:LinearGradient>	
+				</s:fill>
+			</s:Rect>
+			<s:BitmapImage source="@Embed('assets/media.png')" left="20" verticalCenter="0" smooth="true" width="50" height="50"/>
+			<s:Label text="MEDIA" styleName="myLabel" left="100" verticalCenter="0"/>
+			<s:BitmapImage source="@Embed('assets/rightarrow.png')" right="5" verticalCenter="0" smooth="true" width="40" height="40"/>
+		</s:Group>
+		
+	</s:VGroup>
+</s:View>

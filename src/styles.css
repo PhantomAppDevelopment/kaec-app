@@ -1,0 +1,88 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+
+@font-face 
+{
+	src: url("assets/font.otf");
+	fontFamily: MyFont;
+	fontStyle: normal;
+	fontWeight: normal;
+	embedAsCFF: true;
+	advancedAntiAliasing: true;
+	
+}
+
+@font-face 
+{
+	src: url("assets/font.otf");
+	fontFamily: MyFont2;
+	fontStyle: normal;
+	fontWeight: normal;
+	embedAsCFF: falsee;
+	advancedAntiAliasing: true;
+	
+}
+
+s|ActionBar #titleDisplay{
+	textAlign: center;
+	fontWeight: normal;
+	color: #FFFFFF;
+	fontFamily: MyFont2;
+	fontSize: 14px;
+}
+
+s|ActionBar
+{
+	chromeColor: #192227;
+}
+
+s|Application
+{
+	backgroundColor: #192227;
+}
+
+s|View
+{
+	backgroundColor: #192227;	
+}
+
+s|Label
+{
+	fontFamily: MyFont;
+	color: #FFFFFF;
+}
+
+.myLabel
+{
+	fontFamily: MyFont;
+	fontSize: 24px;
+	color: #FFFFFF;
+}
+
+.myListStyle
+{
+	alternatingItemColors: #333333;
+	downColor: #11A9FF;
+	selectionColor: #11A9FF;
+	contentBackgroundColor: #444444;
+	color: #FFFFFF;
+	fontFamily: MyFont2;
+	fontSize: 11px;
+}
+
+.myMessageStyle
+{
+	color: #FFFFFF;
+	fontFamily: MyFont2;
+	fontSize: 11px;
+}
+
+s|BusyIndicator
+{
+	symbolColor: #FFFFFF;
+}
+
+s|Label
+{
+	color: #FFFFFF;
+}
