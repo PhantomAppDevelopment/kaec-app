@@ -11,10 +11,10 @@
 			import spark.events.ViewNavigatorEvent;
 			
 			//Copy your own client ID
-			private static const clientID:String = "";
+			private static const clientID:String = "Y1CO4KJLB1PGIZGVSWX2PK5WPTMVVGLCM2RBP1GNLRHLALUX";
 			
 			//Copy your own client secret
-			private static const clientSecret:String = "";
+			private static const clientSecret:String = "SL2CFYO00XNOIFRQZDXYFQPGU5CQDVFABG52LNRX1C0XIATR";
 			
 			
 			protected function init(event:ViewNavigatorEvent):void

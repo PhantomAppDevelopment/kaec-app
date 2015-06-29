@@ -3,6 +3,7 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" title="KAEC Videos" viewActivate="init(event)">
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
 			import mx.events.PropertyChangeEvent;
 			import mx.rpc.events.ResultEvent;
@@ -10,7 +11,8 @@
 			import spark.events.IndexChangeEvent;
 			import spark.events.ViewNavigatorEvent;
 			
-			public var startIndex:int;
+			private static const YOUTUBE_API_KEY:String = "COPY_YOUR_OWN_YOUTUBE_APIKEY";
+			private var pageToken:String;
 			public var recent:Boolean;
 			public var loading:Boolean;
 			public var months:Object = new Object();
@@ -31,9 +33,9 @@
 				months["12"] = "December";
 				
 				myBusy.visible = true;
-				startIndex = 1;
+				pageToken = "";
 				recent = true;
-				recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&max-results=20&v=2&start-index="+startIndex;
+				recentVideos.url = "https://www.googleapis.com/youtube/v3/search?q=KAEC&maxResults=50&order=relevance&type=video&part=snippet&key="+YOUTUBE_API_KEY;
 				recentVideos.send();
 			}
 			
@@ -47,13 +49,13 @@
 					recent = true;
 				}
 				
-				startIndex = 1;
+				pageToken = "";
 				myBusy.visible = true;
 				
 				if(recent == false){
-					recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&max-results=20&v=2&start-index="+startIndex;
+					recentVideos.url = "https://www.googleapis.com/youtube/v3/search?q=KAEC&maxResults=50&order=relevance&type=video&part=snippet&key="+YOUTUBE_API_KEY;
 				} else {
-					recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&orderby=published&max-results=20&v=2&start-index="+startIndex;
+					recentVideos.url = "https://www.googleapis.com/youtube/v3/search?q=KAEC&maxResults=50&order=date&type=video&part=snippet&key="+YOUTUBE_API_KEY;
 				}
 				
 				videosList.dataProvider = null;
@@ -62,10 +64,14 @@
 			
 			protected function recentVideos_resultHandler(event:ResultEvent):void
 			{
+				var rawData:Object = JSON.parse(String(event.result));
+				pageToken = rawData.nextPageToken;
+				
 				if(videosList.dataProvider == null){
-					videosList.dataProvider = event.result.feed.entry;
+					var videosArray:ArrayList = new ArrayList(rawData.items as Array);
+					videosList.dataProvider = videosArray;
 				} else {
-					for each ( var item : * in event.result.feed.entry){
+					for each (var item:* in rawData.items){
 						videosList.dataProvider.addItem(item);
 					}
 				}
@@ -77,8 +83,8 @@
 			protected function playVideo(event:IndexChangeEvent):void
 			{
 				var myObject:Object = new Object();
-				myObject.title = videosList.selectedItem.title;
-				myObject.url = videosList.selectedItem.group.videoid;
+				myObject.title = videosList.selectedItem.snippet.title;
+				myObject.url = videosList.selectedItem.id.videoId;
 				navigator.pushView(VideoDetails, myObject);
 			}
 						
@@ -99,12 +105,13 @@
 				if(!loading){
 					myBusy.visible = true;
 					loading = true;
-					startIndex+=20;
+					
 					if(recent == false){
-						recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&max-results=20&v=2&start-index="+startIndex;
+						recentVideos.url = "https://www.googleapis.com/youtube/v3/search?q=KAEC&maxResults=50&pageToken="+pageToken+"&order=relevance&type=video&part=snippet&key="+YOUTUBE_API_KEY;
 					} else {
-						recentVideos.url = "https://gdata.youtube.com/feeds/api/videos?q=KAEC&orderby=published&max-results=20&v=2&start-index="+startIndex;
+						recentVideos.url = "https://www.googleapis.com/youtube/v3/search?q=KAEC&maxResults=50&pageToken="+pageToken+"&order=date&type=video&part=snippet&key="+YOUTUBE_API_KEY;
 					}
+					
 					recentVideos.send();
 				}
 			}
@@ -149,20 +156,20 @@
 	<s:List styleName="myListStyle" creationComplete="videosList_creationCompleteHandler(event)" id="videosList" change="playVideo(event)" width="100%" top="50" bottom="0">
 		<s:itemRenderer>
 			<fx:Component>
-				<s:IconItemRenderer messageStyleName="myMessageStyle2" iconWidth="67" iconHeight="50" iconFunction="myIconFunction" messageFunction="myMessageFunction" labelFunction="myLabelFunction">
+				<s:IconItemRenderer messageStyleName="myMessageStyle2" iconScaleMode="letterbox" iconWidth="67" iconHeight="50" iconFunction="myIconFunction" messageFunction="myMessageFunction" labelFunction="myLabelFunction">
 					<fx:Script>
 						<![CDATA[
 							
-							public function myIconFunction(item:Object):String{		
-								return "http://i1.ytimg.com/vi/"+data.group.videoid+"/default.jpg";								
+							private function myIconFunction(item:Object):String{		
+								return data.snippet.thumbnails.medium.url;							
 							}
 							
-							public function myLabelFunction(item:Object):String{								
-								return data.title;
+							private function myLabelFunction(item:Object):String{								
+								return data.snippet.title;
 							}
 							
-							public function myMessageFunction(item:Object):String{								
-								return data.author.name+ "\n" + outerDocument.months[data.published.slice(5,7)]+" "+data.published.slice(8,10)+", "+data.published.slice(0,4);
+							private function myMessageFunction(item:Object):String{								
+								return data.snippet.channelTitle+ "\n" + String(data.snippet.publishedAt).substr(0, 10);
 							}
 							
 						]]>

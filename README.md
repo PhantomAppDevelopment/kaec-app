@@ -3,6 +3,8 @@ KAEC Companion
 
 Important, you need the following API keys:
 
+Youtube Data API Key
+
 Flickr API Key
 
 Google Maps Embed API Key

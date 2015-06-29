@@ -21,7 +21,7 @@
 				myStageWebView.viewPort = new Rectangle(myRect.x, myRect.y*currentFlexScalingFactor+FlexGlobals.topLevelApplication.navigator.actionBar.height*currentFlexScalingFactor, myRect.width*currentFlexScalingFactor, myRect.height*currentFlexScalingFactor);
 				myStageWebView.stage = this.stage;
 				
-				myStageWebView.loadString("<iframe width='100%' height='100%' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/view?key=YOUR_API_KEY" +
+				myStageWebView.loadString("<iframe width='100%' height='100%' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/view?key=AIzaSyBa9Zsncs9k7RevvaCpvr9mPu38jDeHSk8" +
 					"&zoom=17&center="+data.location.lat+","+data.location.lng+"'></iframe>");
 	
 			}

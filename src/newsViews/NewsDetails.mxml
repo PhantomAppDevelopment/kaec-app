@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
-		tabBarVisible="false" title="{data.title}" viewActivate="init(event)" backKeyPressed="backPress(event)"
-		viewDeactivate="goBack(event)" >
+		tabBarVisible="false" title="{data.title}" viewActivate="init(event)" viewDeactivate="goBack(event)" >
 	<fx:Script>
 		<![CDATA[
 			import mx.core.FlexGlobals;
@@ -18,7 +17,6 @@
 			{		
 				NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.KEEP_AWAKE;
 	
-				stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, resize);
 				myStageWebView = new StageWebView(true);
 				myStageWebView.viewPort = new Rectangle(myRect.x, myRect.y*currentFlexScalingFactor+FlexGlobals.topLevelApplication.navigator.actionBar.height*currentFlexScalingFactor, myRect.width*currentFlexScalingFactor, myRect.height*currentFlexScalingFactor);
 				myStageWebView.stage = this.stage;
@@ -34,25 +32,21 @@
 					"a:hover {color:#FFFFFF;}"+
 					"a:active {color:#FFFFFF;}"+
 					"</style></head><body>"+data.description+"</body></html>");
+				myRect.addEventListener(Event.RESIZE, resize);
 			}
 			
 			protected function goBack(event:ViewNavigatorEvent):void
 			{
 				NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
 				myStageWebView.dispose();
-				stage.removeEventListener(StageOrientationEvent.ORIENTATION_CHANGE, resize);
+				myRect.removeEventListener(Event.RESIZE, resize);
 			}
 			
-			protected function resize(event:StageOrientationEvent):void
+			protected function resize(event:Event):void
 			{
 				myStageWebView.viewPort = new Rectangle(myRect.x, myRect.y*currentFlexScalingFactor+FlexGlobals.topLevelApplication.navigator.actionBar.height*currentFlexScalingFactor, myRect.width*currentFlexScalingFactor, myRect.height*currentFlexScalingFactor);
 			}
-			
-			protected function backPress(event:FlexEvent):void
-			{
-				event.preventDefault();
-			}
-			
+						
 		]]>
 	</fx:Script>
 	
@@ -66,7 +60,7 @@
 		</s:Button>
 	</s:navigationContent>
 	
-	<s:Rect id="myRect" radiusX="5" radiusY="5" left="10" right="10" top="10" bottom="10"/>
+	<s:Spacer id="myRect" left="10" right="10" top="10" bottom="10"/>
 	
 </s:View>
 
