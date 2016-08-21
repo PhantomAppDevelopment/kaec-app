@@ -1,30 +1,31 @@
-KAEC Companion
-====
+# KAEC Companion 1.0.0
 
-Important, you need the following API keys:
+KAEC Companion is a mobile application developed with the Apache Flex mobile framework. It showcases how to use different web services to obtain information about an specific city (KAEC).
 
-Youtube Data API Key
+It uses the following APIs and technologies:
 
-Flickr API Key
+  - Foursquare API (JSON)
+  - Youtube V3 API (JSON)
+  - Flickr API (XML)
+  - RSS Feeds (XML)
+  - Google Maps (IFrame)
 
-Google Maps Embed API Key
+Some of the techniques covered are:
 
-Foursquare API Key and secret
+  - Infinite scrolling in lists.
+  - Custom ItemRenderer.
+  - Passing data between screens.
+  - Custom Font.
+  - Using StageWebView to load Youtube and Google Maps
+  - Multi DPI development.
 
-All of these can be obtained free of charge.
+To compile this application you only require a recent version of the Apache Flex and Adobe AIR SDKs.
+You will also require to provide your own API keys which can be obtained for free on their respective sites.
 
-Apache Flex 4.12.1 and Adobe AIR 13 are recommended.
+[![Watch on Youtube](http://i.imgur.com/GQOzAMF.png)](https://www.youtube.com/watch?v=vdVpTEplEJc)
 
-This app demonstrates how to:
+## Download
 
-Consume XML files and RSS feeds.
+You can test this app by downloading it directly from Google Play.
 
-Consume and parse JSON files.
-
-Creating custom menus and navigation.
-
-Setting a dynamic StageWebView that resizes in any screen and orientation.
-
-Using CSS to style components.
-
-Embedding fonts for use on all components.
+[![Download](http://i.imgur.com/He0deVa.png)](https://play.google.com/store/apps/details?id=air.im.phantom.kaec)

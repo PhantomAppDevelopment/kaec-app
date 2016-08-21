@@ -8,7 +8,7 @@
 			import spark.events.IndexChangeEvent;
 			import spark.events.ViewNavigatorEvent;
 			
-			private static const flickrapikey:String = "48a2ca079b8c8df062c466f27b24fc36";
+			private static const flickrapikey:String = "";
 			
 			protected function init(event:ViewNavigatorEvent):void
 			{
